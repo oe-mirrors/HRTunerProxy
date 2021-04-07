@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import threading
 import string
 import random
@@ -19,12 +21,12 @@ from Screens.Screen import Screen
 from Screens.MessageBox import MessageBox
 
 from . import _, tunerTypes, tunerfolders, tunerports, getIP, logger, isDreamOS
-from about import HRTunerProxy_About
+from .about import HRTunerProxy_About
 from enigma import getDesktop, eDVBResourceManager
-from getLineup import getlineup
-from getDeviceInfo import getdeviceinfo
-from ssdp import SSDPServer
-from server import server
+from .getLineup import getlineup
+from .getDeviceInfo import getdeviceinfo
+from .ssdp import SSDPServer
+from .server import server
 
 BaseURL = {}
 FriendlyName = {}
@@ -35,19 +37,19 @@ choicelist = []
 
 def TunerInfoDebug(type=None):
 	if type:
-		logger.info('%s' % str(BaseURL[type]).replace('\n',''))
-		logger.info('%s' % str(FriendlyName[type]).replace('\n',''))
-		logger.info('%s' % str(Source[type]).replace('\n',''))
-		logger.info('%s' % str(TunerCount[type]).replace('\n',''))
-		logger.info('%s' % str(NoOfChannels[type]).replace('\n\n',''))
+		logger.info('%s' % str(BaseURL[type]).replace('\n', ''))
+		logger.info('%s' % str(FriendlyName[type]).replace('\n', ''))
+		logger.info('%s' % str(Source[type]).replace('\n', ''))
+		logger.info('%s' % str(TunerCount[type]).replace('\n', ''))
+		logger.info('%s' % str(NoOfChannels[type]).replace('\n\n', ''))
 		logger.info('Bouquet %s' % config.hrtunerproxy.bouquets_list[type].value)
 	else:
 		for type in tunerTypes:
-			logger.info('%s' % str(BaseURL[type]).replace('\n',''))
-			logger.info('%s' % str(FriendlyName[type]).replace('\n',''))
-			logger.info('%s' % str(Source[type]).replace('\n',''))
-			logger.info('%s' % str(TunerCount[type]).replace('\n',''))
-			logger.info('%s' % str(NoOfChannels[type]).replace('\n\n',''))
+			logger.info('%s' % str(BaseURL[type]).replace('\n', ''))
+			logger.info('%s' % str(FriendlyName[type]).replace('\n', ''))
+			logger.info('%s' % str(Source[type]).replace('\n', ''))
+			logger.info('%s' % str(TunerCount[type]).replace('\n', ''))
+			logger.info('%s' % str(NoOfChannels[type]).replace('\n\n', ''))
 			logger.info('Bouquet %s' % config.hrtunerproxy.bouquets_list[type].value)
 
 def TunerInfo(type=None):
@@ -134,7 +136,7 @@ class HRTunerProxy_Setup(ConfigListScreen, Screen):
 
 		self["information"] = Label()
 		self["hinttext"] = Label()
-		self["actions"] = ActionMap(['ColorActions','OkCancelActions', 'DirectionActions'],
+		self["actions"] = ActionMap(['ColorActions', 'OkCancelActions', 'DirectionActions'],
 									{
 									"cancel": self.keyCancel,
 									"red": self.keyCancel,
@@ -183,7 +185,7 @@ class HRTunerProxy_Setup(ConfigListScreen, Screen):
 		self.onClose.append(self.__onClose)
 
 	def LayoutFinish(self):
-		print 'LayoutFinish'
+		print('LayoutFinish')
 		self.createmenu()
 		if getIP() == '0.0.0.0':
 			self["information"].setText(_('WARNING: No IP address found. Please make sure you are connected to your LAN via ethernet or Wi-Fi.\n\nPress OK to exit.'))
@@ -195,14 +197,14 @@ class HRTunerProxy_Setup(ConfigListScreen, Screen):
 			self.populate()
 
 	def onChange(self):
-		print 'onChange'
+		print('onChange')
 		currentconfig = self["config"].getCurrent()[0]
 		if currentconfig == _('Tuner type to use.'):
 			self.createmenu()
 		self.populate()
 
 	def selectionChanged(self):
-		print 'selectionChanged'
+		print('selectionChanged')
 		self.populate()
 
 	def __onClose(self):
@@ -224,7 +226,7 @@ class HRTunerProxy_Setup(ConfigListScreen, Screen):
 			self["config"].onSelectionChanged.append(self.selectionChanged)
 
 	def populate(self, answer=None):
-		print 'populate'
+		print('populate')
 		setup_exists = False
 		self["actions"].setEnabled(False)
 		self["closeaction"].setEnabled(False)
@@ -281,37 +283,37 @@ class HRTunerProxy_Setup(ConfigListScreen, Screen):
 					self["hinttext"].setText(_('Press OK to continue setting up this tuner or select a different tuner type.'))
 					self.hinttext = _('Press LEFT / RIGHT to set number of concurent streams.')
 				if not setup_exists and self.firstrun:
-					print 'U1'
+					print('U1')
 					self["information"].setText(_('Please note: DVR feature in Plex / Emby is a premium / premiere feature. For more information please refer to:\nhttps://www.plex.tv/features/plex-pass\nhttps://emby.media/premiere.html'))
 					self["hinttext"].setText(_('Press OK to continue setting up.'))
 				elif setup_exists:
-					print 'U2'
+					print('U2')
 					self["information"].setText(_('Please note: To use another tuner type in Plex you need to setup/have another server.\nAre you sure you want to continue?'))
 				else:
-					print 'U3'
+					print('U3')
 					if currentconfig == _('Tuner type to use.'):
 						self.hinttext = _('Press LEFT / RIGHT to select a different tuner type.')
-						print 'T2'
+						print('T2')
 					elif currentconfig == _('Bouquet to use.'):
-						print 'T3'
+						print('T3')
 						self.hinttext = _('Press LEFT / RIGHT to select a different bouquet.')
 					elif currentconfig == _('Debug Mode.'):
-						print 'T4'
+						print('T4')
 						self.hinttext = _('Press LEFT / RIGHT to enable or disable debug mode.')
 					self.ok()
 				self["okaction"].setEnabled(True)
 				self["key_green"].setText(_("Save"))
 				self["key_yellow"].setText("")
 		else:
-			print 'T1'
+			print('T1')
 			if currentconfig == _('Tuner type to use.'):
 				self.hinttext = _('Press LEFT / RIGHT to select a different tuner type.')
-				print 'T2'
+				print('T2')
 			elif currentconfig == _('Bouquet to use.'):
-				print 'T3'
+				print('T3')
 				self.hinttext = _('Press LEFT / RIGHT to select a different bouquet.')
 			elif currentconfig == _('Debug Mode.'):
-				print 'T4'
+				print('T4')
 				self.hinttext = _('Press LEFT / RIGHT to enable or disable debug mode.')
 			self["key_green"].setText(_("Save"))
 			self["key_yellow"].setText(_("Delete"))
@@ -322,7 +324,7 @@ class HRTunerProxy_Setup(ConfigListScreen, Screen):
 	def cleanfiles(self):
 		type = config.hrtunerproxy.type.value
 		if path.exists('/etc/enigma2/%s.discover' % type):
-			self.session.openWithCallback(self.cleanconfirm, MessageBox,text = _("Do you really want to remove the files for this tuner type? Doing so will cause your DVR to be none functional."), type = MessageBox.TYPE_YESNO)
+			self.session.openWithCallback(self.cleanconfirm, MessageBox, text = _("Do you really want to remove the files for this tuner type? Doing so will cause your DVR to be none functional."), type = MessageBox.TYPE_YESNO)
 
 	def cleanconfirm(self, answer):
 		if answer is not None and answer and self["config"].getCurrent() is not None:
@@ -333,7 +335,7 @@ class HRTunerProxy_Setup(ConfigListScreen, Screen):
 				remove('/etc/enigma2/%s.discover' % type)
 			if path.exists('/etc/enigma2/%s.device' % type):
 				remove('/etc/enigma2/%s.device' % type)
-			self.session.openWithCallback(self.rebootconfirm, MessageBox,text = _("Files deleted. Please restart enigma2.\n\nDo you want to restart now?"), type = MessageBox.TYPE_YESNO)
+			self.session.openWithCallback(self.rebootconfirm, MessageBox, text = _("Files deleted. Please restart enigma2.\n\nDo you want to restart now?"), type = MessageBox.TYPE_YESNO)
 
 	def ok(self):
 		self.firstrun = False
@@ -354,7 +356,7 @@ class HRTunerProxy_Setup(ConfigListScreen, Screen):
 
 	def keySave(self):
 		if self.savedval != config.hrtunerproxy.type.value and path.exists('/etc/enigma2/%s.device' % self.savedval):
-			self.session.openWithCallback(self.saveconfirm, MessageBox,text = _("It seems you have already set up another tuner. Your server can only support one tuner type. To use this additional tuner type you will need to setup another server. Do you want to continue creating the files?"), type = MessageBox.TYPE_YESNO)
+			self.session.openWithCallback(self.saveconfirm, MessageBox, text = _("It seems you have already set up another tuner. Your server can only support one tuner type. To use this additional tuner type you will need to setup another server. Do you want to continue creating the files?"), type = MessageBox.TYPE_YESNO)
 		else:
 			self.saveconfirm(True)
 
@@ -374,7 +376,7 @@ class HRTunerProxy_Setup(ConfigListScreen, Screen):
 			config.hrtunerproxy.debug.save()
 			configfile.save()
 			if self.savedval != config.hrtunerproxy.type.value and path.exists('/etc/enigma2/%s.device' % self.savedval) or newsetup:
-				self.session.openWithCallback(self.rebootconfirm, MessageBox,text = _("Files created. Please restart enigma2 and then you should be able to add this STB to your server.\n\nDo you want to restart now?"), type = MessageBox.TYPE_YESNO)
+				self.session.openWithCallback(self.rebootconfirm, MessageBox, text = _("Files created. Please restart enigma2 and then you should be able to add this STB to your server.\n\nDo you want to restart now?"), type = MessageBox.TYPE_YESNO)
 			else:
 				self.close()
 
@@ -409,13 +411,13 @@ def startssdp(dvbtype):
 	discover = getdeviceinfo.discoverdata(dvbtype)
 	device_uuid = discover['DeviceUUID']
 	if config.hrtunerproxy.debug.value:
-		logger.info('Starting SSDP for %s, device_uuid: %s' % (dvbtype,device_uuid))
+		logger.info('Starting SSDP for %s, device_uuid: %s' % (dvbtype, device_uuid))
 	local_ip_address = getIP()
 	ssdp = SSDPServer()
 	ssdp.register('local',
 				  'uuid:{}::upnp:rootdevice'.format(device_uuid),
 				  'upnp:rootdevice',
-				  'http://{}:{}/device.xml'.format(local_ip_address,tunerports[dvbtype]))
+				  'http://{}:{}/device.xml'.format(local_ip_address, tunerports[dvbtype]))
 	thread_ssdp = threading.Thread(target=ssdp.run, args=())
 	thread_ssdp.daemon = True # Daemonize thread
 	thread_ssdp.start()
@@ -429,7 +431,7 @@ def starthttpserver(dvbtype):
 
 def HRTunerProxy_AutoStart(reason, session=None, **kwargs):
 	if config.hrtunerproxy.debug.value:
-		logger.info('Starting AutoSart reason: %s, for types: %s' % (reason,tunerTypes))
+		logger.info('Starting AutoSart reason: %s, for types: %s' % (reason, tunerTypes))
 	if reason == 0:
 		for type in tunerTypes:
 			if path.exists('/etc/enigma2/%s.discover' % type):
@@ -453,6 +455,6 @@ def Plugins(**kwargs):
 		iconpic="plugin-hd.png"
 	else:
 		iconpic="plugin.png"
-	return [PluginDescriptor(name = "HRTunerProxy",description = _("Setup the HR-Tuner Proxy server"), where = PluginDescriptor.WHERE_SESSIONSTART, fnc=HRTunerProxy_AutoStart, needsRestart=True),
-			PluginDescriptor(name = "HRTunerProxy",description = _("Setup the HR-Tuner Proxy server"), icon=iconpic, where = PluginDescriptor.WHERE_PLUGINMENU, fnc=HRTunerProxy_SetupMain),
-			PluginDescriptor(name = "HRTunerProxy",description = _("Setup the HR-Tuner Proxy server"), where = PluginDescriptor.WHERE_MENU,needsRestart = False, fnc=startHRTunerProxy_Setup)]
+	return [PluginDescriptor(name = "HRTunerProxy", description = _("Setup the HR-Tuner Proxy server"), where = PluginDescriptor.WHERE_SESSIONSTART, fnc=HRTunerProxy_AutoStart, needsRestart=True),
+			PluginDescriptor(name = "HRTunerProxy", description = _("Setup the HR-Tuner Proxy server"), icon=iconpic, where = PluginDescriptor.WHERE_PLUGINMENU, fnc=HRTunerProxy_SetupMain),
+			PluginDescriptor(name = "HRTunerProxy", description = _("Setup the HR-Tuner Proxy server"), where = PluginDescriptor.WHERE_MENU, needsRestart = False, fnc=startHRTunerProxy_Setup)]

@@ -1,11 +1,14 @@
+from __future__ import print_function
 import re
 import json
-from urllib import unquote
 from os import path, mkdir
 from sys import modules
 
 from enigma import eServiceReference
 from Components.config import config
+
+from six.moves.urllib.parse import unquote
+
 
 class getLineup:
 	def __init__(self, duplicates = False, bouquet = None, bouquet_names_only = False):
@@ -42,7 +45,7 @@ class getLineup:
 	def read_services(self):
 		try:
 			db = open(self.path + self.db, "r")
-		except Exception, e:
+		except Exception as e:
 			return
 
 		content = db.read()
@@ -71,7 +74,7 @@ class getLineup:
 	def read_tv_index(self):
 		try:
 			bouquets = open(self.path + self.tv_index, "r")
-		except Exception, e:
+		except Exception as e:
 			return
 
 		content = bouquets.read()
@@ -96,7 +99,7 @@ class getLineup:
 			name = ''
 			try:
 				bouquet = open(self.path + filename, "r")
-			except Exception, e:
+			except Exception as e:
 				continue
 
 			content = bouquet.read()
@@ -119,7 +122,7 @@ class getLineup:
 					service_ref = row[9:].strip()
 					service_ref_split = service_ref.split(":")
 					if len(service_ref_split) < 10:
-						print "[HRTunerProxy] [read_tv_bouquets] Error in %s" % filename
+						print("[HRTunerProxy] [read_tv_bouquets] Error in %s" % filename)
 						continue
 					service_flags = int(service_ref_split[1])
 					if service_flags == (eServiceReference.mustDescent|eServiceReference.canDescent|eServiceReference.isGroup): # alternatives (134)
@@ -175,7 +178,7 @@ class getLineup:
 		if result is not None:
 			try:
 				alternative = open(self.path + result.group(1), "r")
-			except Exception, e:
+			except Exception as e:
 				return
 			content = alternative.read()
 			alternative.close()
@@ -187,7 +190,7 @@ class getLineup:
 					service_ref = row[9:].strip()
 					service_ref_split = service_ref.split(":")
 					if len(service_ref_split) < 10:
-						print "[HRTunerProxy] [alternatives] Error in %s" % result.group(1)
+						print("[HRTunerProxy] [alternatives] Error in %s" % result.group(1))
 						continue
 					if int(service_ref_split[0], 16) != 1: # not a regular service. Might be IPTV.
 						continue

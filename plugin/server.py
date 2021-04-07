@@ -1,17 +1,18 @@
+from __future__ import absolute_import
 import posixpath
 import argparse
-import urllib
 import os
 import json
 
+from six.moves.BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
+from six.moves import urllib
 from sys import modules
-from SimpleHTTPServer import SimpleHTTPRequestHandler
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 from . import getIP, tunerports, porttypes, logger
-from getLineup import getlineup
-from getLineupStatus import getlineupstatus
-from getDeviceInfo import getdeviceinfo
+from .getLineup import getlineup
+from .getLineupStatus import getlineupstatus
+from .getDeviceInfo import getdeviceinfo
 from Components.config import config
 
 
@@ -102,9 +103,9 @@ td {white-space: nowrap;}
 td:first-child {text-align: center;}
 button { margin-top: 0.25em; }""")
 		else:
-			self.send_error(404,'[HRTunerProxy] File not found!')
+			self.send_error(404, '[HRTunerProxy] File not found!')
 			if config.hrtunerproxy.debug.value:
-				logger.info('file type not coded:',self.path)
+				logger.info('file type not coded:', self.path)
 			return
 
 def run(dvbtype):
@@ -117,7 +118,7 @@ def startserver(ip_address='', port=''):
 	httpd = RootedHTTPServer(server_address, RootedHTTPRequestHandler)
 	sa = httpd.socket.getsockname()
 	if config.hrtunerproxy.debug.value:
-		logger.info('Serving HTTP on %s port %s' % (str(sa[0]),str(sa[1])))
+		logger.info('Serving HTTP on %s port %s' % (str(sa[0]), str(sa[1])))
 	httpd.serve_forever()
 
 

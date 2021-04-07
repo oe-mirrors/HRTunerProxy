@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import string
 import random
 import json
@@ -24,7 +26,7 @@ except:
 		def getEnigmaVersionString():
 			return '000000'
 
-from getLineup import getlineup
+from .getLineup import getlineup
 from . import tunertypes, tunerports, tunerfolders, getIP
 
 charset = {
@@ -74,7 +76,7 @@ class getDeviceInfo:
 	def tunersInUse(self):
 		# returns list of nim.slot numbers that are currenly in use
 		mask = config.hrtunerproxy.slotsinuse.value
-		print "[HRTunerProxy] mask:%s\n" % mask
+		print("[HRTunerProxy] mask:%s\n" % mask)
 		slots = []
 		for i in range(len(format(mask, 'b'))):
 			if (mask >> i) & 0x1:
@@ -84,7 +86,7 @@ class getDeviceInfo:
 	def getTunerInfo(self, dvb_type):
 		nimList = getNimList(dvb_type)
 		tunersInUse = self.tunersInUse()
-		print "[HRTunerProxy] tunersInUse", tunersInUse
+		print("[HRTunerProxy] tunersInUse", tunersInUse)
 		tunerstatus = {}
 		x = 0
 		for nim in nimList:
@@ -95,10 +97,10 @@ class getDeviceInfo:
 
 
 def getNimList(dvbtype):
-	return nimmanager.getNimListOfType(dvbtype) if dvbtype not in ('multi','iptv') else nimmanager.nimList()
+	return nimmanager.getNimListOfType(dvbtype) if dvbtype not in ('multi', 'iptv') else nimmanager.nimList()
 
 def tunercount(dvbtype):
-	return len(nimmanager.getNimListOfType(dvbtype)) if dvbtype not in ('multi','iptv') else len(nimmanager.nimList())
+	return len(nimmanager.getNimListOfType(dvbtype)) if dvbtype not in ('multi', 'iptv') else len(nimmanager.nimList())
 
 def tunerdata(dvbtype):
 	device_info = getDeviceInfo()
@@ -122,7 +124,7 @@ def tunerstatus(dvbtype):
 <table>
 """ % discover['FriendlyName']
 	for x in range(tunercount(dvbtype)):
-		data += "<tr><td>Tuner %s Channel</td><td>%s</td></tr>\n" % (x,ts["tuner%s" % x])
+		data += "<tr><td>Tuner %s Channel</td><td>%s</td></tr>\n" % (x, ts["tuner%s" % x])
 	data += """</table>
 </div>
 </body>
@@ -140,13 +142,13 @@ def write_discover(dvbtype="DVB-S"):
 		with open('/etc/enigma2/%s.discover' % dvbtype, 'w') as outfile:
 			json.dump(data, outfile)
 		outfile.close()
-	except Exception, e:
-		print "Error opening %s for writing" % writefile
+	except Exception as e:
+		print("Error opening %s for writing" % writefile)
 		return
 
 def devicedata(dvbtype):
 	if path.exists('/etc/enigma2/%s.device' % dvbtype):
-		datafile = open('/etc/enigma2/%s.device' % dvbtype,'r')
+		datafile = open('/etc/enigma2/%s.device' % dvbtype, 'r')
 		xmldoc = datafile.read()
 		datafile.close()
 	else:

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import print_function
 import gettext
 import socket
 import fcntl
@@ -10,7 +12,7 @@ from Components.config import config, ConfigSubsection, ConfigSubDict, ConfigSel
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS, SCOPE_LANGUAGE
 
-from getLineup import getBouquetsList
+from .getLineup import getBouquetsList
 
 try:
 	from enigma import eMediaDatabase
@@ -72,7 +74,7 @@ config.hrtunerproxy.debug = ConfigEnableDisable(default = False)
 def getVersion():
 	if path.exists("/usr/lib/enigma2/python/Plugins/SystemPlugins/HRTunerProxy/PLUGIN_VERSION"):
 		f = open("/usr/lib/enigma2/python/Plugins/SystemPlugins/HRTunerProxy/PLUGIN_VERSION")
-		PLUGIN_VERSION = _('v%s ') % f.read().replace('\n','')
+		PLUGIN_VERSION = _('v%s ') % f.read().replace('\n', '')
 		f.close()
 	else:
 		PLUGIN_VERSION = ''
@@ -99,7 +101,7 @@ def getIfConfig(ifname):
 	infos['hwaddr']  = 0x8927 # SIOCSIFHWADDR
 	infos['netmask'] = 0x891b # SIOCGIFNETMASK
 	try:
-		for k,v in infos.items():
+		for k, v in infos.items():
 			ifreq[k] = _ifinfo(sock, v, ifname)
 	except:
 		pass
@@ -109,7 +111,7 @@ def getIfConfig(ifname):
 def getIfInfo():
 	for port in ('eth0', 'eth1', 'wlan0', 'wlan1', 'wlan2', 'wlan3', 'ra0'):
 		ifinfo = getIfConfig(port)
-		if ifinfo.has_key('addr'):
+		if 'addr' in ifinfo:
 			return ifinfo
 	return None
 
@@ -138,6 +140,6 @@ else:
 		if gettext.dgettext(PluginLanguageDomain, txt):
 			return gettext.dgettext(PluginLanguageDomain, txt)
 		else:
-			print "[" + PluginLanguageDomain + "] fallback to default translation for " + txt
+			print("[" + PluginLanguageDomain + "] fallback to default translation for " + txt)
 			return gettext.gettext(txt)
 	language.addCallback(localeInit())
